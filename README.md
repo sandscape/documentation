@@ -32,17 +32,18 @@ It is _very_ *important* to understand all of the following points because
 Sandscape operates within the Jenkins Script Console.  The Jenkins Script
 Console:
 
-* Is a web-based shell into the Jenkins runtime.  It is a Groovy Shell.  Groovy
-  is a very powerful language which offers the ability to do practically
-  anything Java can do including create sub-processes and execute arbitrary
-  commands on the Jenkins master and slaves.  It can even read files in which
-  the Jenkins master has access to on the host (like `/etc/passwd`).
-* It offers no administrative controls stop a script once it is able to
-  execute within the Script Console.
-* Can configure any Jenkins setting and can do more than any human administrator
-  could via the Jenkins Web UI.  It can disable security, reconfigure security,
-  even open a backdoor on the host operating system completely outside of
-  Jenkins.
+* Is a web-based Groovy shell into the Jenkins runtime.  Groovy is a very
+  powerful language which offers the ability to do practically anything Java can
+  do including create sub-processes and execute arbitrary commands on the
+  Jenkins master and slaves.  It can even read files in which the Jenkins master
+  has access to on the host (like `/etc/passwd`).
+* Offers no administrative controls stop a User once they are able to execute
+  the Script Console from affecting all parts of the Jenkins infrastructure.
+  Granting a normal Jenkins user Script Console Access is essentially the same
+  as giving them Administer rights within Jenkins.
+* Can configure any Jenkins setting. It can disable security, reconfigure
+  security, even open a backdoor on the host operating system completely outside
+  of the Jenkins process.
 * Is so powerful because it was originally intended as a debugging interface for
   Jenkins developers.
 
@@ -58,11 +59,11 @@ plugins.
 Recommendations for Jenkins:
 
 Due to the tight integration Sandscape plugins require with Jenkins plugins, it
-is recommended to adopt a strict process of Jenkins plugin versioning and to
-disable the [Jenkins Update Site][sc-disable-jus].  The Sandscape project offers
-a template which can be used for this to [bootstrap Jenkins and exact versions
-of plugins][ss-jenkins-bootstrap].  The Jenkins bootstrapper also supports
-generating system packages for the Jenkins master.
+is recommended to adopt a strict process of updating Jenkins and Jenkins
+plugins.  This also means disable the [Jenkins Update Site][sc-disable-jus].
+The Sandscape project offers a template which can be used for this to [bootstrap
+Jenkins and exact versions of plugins][ss-jenkins-bootstrap].  The Jenkins
+bootstrapper also supports generating system packages for the Jenkins master.
 
 Recommendations for Sandscape:
 
