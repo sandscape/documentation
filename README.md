@@ -68,20 +68,21 @@ Recommendations for Sandscape:
 
 * It is _highly recommended_ that before you configure sandscape on your Jenkins
   instance, you review all of the source code.
+* Mirror the Sandscape source code into a place you fully control.  This way
+  updates to Sandscape will not go unreviewed.
+
+Recommendations for Sandscape plugins:
+
 * Before using any Sandscape plugin, you should completely review and understand
   its source code.  Sandscape plugins execute in the Jenkins Script Console as
   well so the same warnings above apply to them.
-* Mirror the Sandscape source code into a place you fully control.  This way
-  updates to Sandscape will not go unreviewed.
 * Mirror any Sandscape plugin you plan to use into a place you fully control.
   This is so updates to the plugin sources don't affect your configuration and
   don't go unreviewed.
 
-Recommendations for Sandscape plugins:
-
 # Getting started
 
-To set up Sandscape, clone [the Sandscape init repository][sc] and execute:
+To set up Sandscape, clone [the Sandscape init repository][ss] and execute:
 
     git clone https://github.com/sandscape/sandscape.git
     cd sandscape/
@@ -105,6 +106,6 @@ License][cc-by-sa].  See [LICENSE](LICENSE) for details.
 [jenkins-hook]: https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hook+Script
 [jenkins-sc]: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console
 [sc-disable-jus]: https://github.com/samrocketman/jenkins-script-console-scripts/blob/master/disable-all-update-sites.groovy
-[sc]: https://github.com/sandscape/sandscape
+[ss-jenkins-bootstrap]: https://github.com/sandscape/jenkins-bootstrap
 [ss]: https://github.com/sandscape/sandscape
 [youtube-sc]: https://www.youtube.com/watch?v=T1x2kCGRY1w
