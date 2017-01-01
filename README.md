@@ -97,6 +97,35 @@ and `JENKINS_WEB` is the location to an existing Jenkins instance.
 Sandscape will not make changes to your Jenkins installation without a
 `config.json` file, which dictates the configuration of a Jenkins instance.
 
+### Definitions
+
+* Sandscape - A set of Jenkins Script Console scripts used to provide support
+  for Sandscape plugins.  It reads the `sandscape-config.json` user
+  configuration, creates Groovy bindings for the configuration and Sandscape
+  plugins, downloads any missing Sandscape plugins, and then executes the
+  Sandscape plugins in the order in which they're defined.  Sandscape itself
+  does not itself update any settings on the Jenkins instance.
+* Sandscape plugins - Simple groovy scripts designed to be run within the
+  Jenkins Script Console but called from Sandscape.  Sandscape plugins are
+  scripts that actually configure Jenkins settings of the running Jenkins
+  instance.
+
+Sandscape provides the following support for Sandscape plugins:
+
+* Ensures Jenkins does not have Shutdown Mode enabled.  No configuration should
+  be updated while Shutdown Mode is active.
+* Makes available [helpful functions and objects](docs/bindings.md) to plugins
+  as Groovy bindings.
+* Reads, validates, and makes available `sandscape-config.json` user
+  configuration to plugins.  The plugins will use this configuration to
+  configure the Jenkins instance.
+
+### What happens when Sandscape executes?
+
+Sandscape is typically called either from an [init hook][jenkins-hook] or the
+Jenkins Script Console.  The following operations occur in order.
+
+1. Something...
 
 [![Creative Commons License][cc-img]][cc-by-sa] This documentation is licensed
 under a [Creative Commons Attribution-ShareAlike 4.0 International
