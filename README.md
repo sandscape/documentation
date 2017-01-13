@@ -60,10 +60,11 @@ Recommendations for Jenkins:
 
 Due to the tight integration Sandscape plugins require with Jenkins plugins, it
 is recommended to adopt a strict process of updating Jenkins and Jenkins
-plugins.  This also means disable the [Jenkins Update Site][sc-disable-jus].
-The Sandscape project offers a template which can be used for this to [bootstrap
-Jenkins and exact versions of plugins][ss-jenkins-bootstrap].  The Jenkins
-bootstrapper also supports generating system packages for the Jenkins master.
+plugins.  This also means disable the [Jenkins Update
+Site][jenkins-sc-disable-jus].  The Sandscape project offers a template which
+can be used for this to [bootstrap Jenkins and exact versions of
+plugins][ss-jenkins-bootstrap].  The Jenkins bootstrapper also supports
+generating system packages for the Jenkins master.
 
 Recommendations for Sandscape:
 
@@ -81,21 +82,10 @@ Recommendations for Sandscape plugins:
   This is so updates to the plugin sources don't affect your configuration and
   don't go unreviewed.
 
-# Getting started
+# Technical Introduction
 
-To set up Sandscape, clone [the Sandscape init repository][ss] and execute:
-
-    git clone https://github.com/sandscape/sandscape.git
-    cd sandscape/
-    export JENKINS_CREDENTIALS="someuser:somepassword"
-    export JENKINS_WEB="https://jenkins.example.com/"
-    ./setup_sandscape.sh
-
-`JENKINS_CREDENTIALS` must contain the credentials of a Jenkins administrator
-and `JENKINS_WEB` is the location to an existing Jenkins instance.
-
-Sandscape will not make changes to your Jenkins installation without a
-`config.json` file, which dictates the configuration of a Jenkins instance.
+This technical introduction is for those familiar with Jenkins and programming
+but not necessarily familiar with Sandscape.
 
 ### Definitions
 
@@ -120,12 +110,68 @@ Sandscape provides the following support for Sandscape plugins:
   configuration to plugins.  The plugins will use this configuration to
   configure the Jenkins instance.
 
-### What happens when Sandscape executes?
+### How can Sandscape be executed?
 
 Sandscape is typically called either from an [init hook][jenkins-hook] or the
 Jenkins Script Console.  The following operations occur in order.
 
-1. Something...
+### What happens when Sandscape executes?
+
+All `*.groovy` scripts and `*.json` files mentioned below are relative to
+`${JENKINS_HOME}/sandscape/` path.
+
+1. Checks if Jenkins shutdown mode is enabled (a.k.a. quieting down).  If it is
+   then abort.
+2. Evaluates [`functions.groovy`](scripts/functions.groovy) file which provides
+   several helpful methods via Groovy Bindings.  Failure in this step causes an
+   abort.
+3. Checks if `pre_tasks.groovy` exists.  If it does, then it is also evaluated.
+   [Learn more about `pretasks.groovy`](docs/tasks.md#pre_tasks).
+4. Reads and validates [`sandscape-config.json`](docs/sandscape-config.md).  It
+   makes it available to plugins as a binding.  Failure in this step causes an
+   abort.
+5. Runs a loop across all plugins defined in `sandscape-config.json` (see
+   [Defining plugins section](docs/sandscape-config.md#defining-plugins)).  In
+   each loop iteration it performs the following steps in order.
+   1. Check to see Jenkins shutdown mode is enabled.  If it is, then abort all
+      further operations.
+   2. Check if the [sandscape option `force_download_plugins`][ss-options] to
+      force download plugins is enabled.  If it is then always download.
+      Otherwise, it will only download if the plugin doesn't exist.
+   3. If the Sandscape Plugin name does not begin with `core-*` then assume it
+      is meant to configure a setting for a Jenkins plugin.  Run a check to see
+      if the plugin exists.  If the [sadscape option
+      `skip_missing_plugins`][ss-options] is enabled then the Sandscape will
+      continue to configure other plugins but skipping the current missing one.
+      Otherwise, Sandscape will abort all further operations.
+   4. Creates a binding for the plugin configuration.  This makes configs
+      quickly accessible to plugins.
+   5. Evaluate the current Sandscape plugin for this iteration.
+   6. Checks for errors in evaluating the Sandscape plugin.  If there were
+      errors then it will abort all further operations.  However, if the
+      [Sandscape option `continue_on_plugin_error`][ss-options] is enabled then
+      it will not abort.
+6. Checks if `post_tasks.groovy` exists.  If it does then it is evaluated.
+   [Learn more about `post_tasks.groovy`](docs/tasks.md#post_tasks).  Error
+   state is available to `post_tasks.groovy` so that actions can be performed
+   based on the success or failure of configuring plugins.
+
+# Getting started
+
+To set up install Sandscape, clone [the Sandscape init repository][ss] and
+execute:
+
+    git clone https://github.com/sandscape/sandscape.git
+    cd sandscape/
+    export JENKINS_CREDENTIALS="someuser:somepassword"
+    export JENKINS_WEB="https://jenkins.example.com/"
+    ./setup_sandscape.sh
+
+`JENKINS_CREDENTIALS` must contain the credentials of a Jenkins administrator
+and `JENKINS_WEB` is the location to an existing Jenkins instance.
+
+Sandscape will not make changes to your Jenkins installation without a
+`config.json` file, which dictates the configuration of a Jenkins instance.
 
 [![Creative Commons License][cc-img]][cc-by-sa] This documentation is licensed
 under a [Creative Commons Attribution-ShareAlike 4.0 International
@@ -135,7 +181,8 @@ License][cc-by-sa].  See [LICENSE](LICENSE) for details.
 [cc-img]: https://i.creativecommons.org/l/by-sa/4.0/80x15.png
 [jenkins-hook]: https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hook+Script
 [jenkins-sc]: https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console
-[sc-disable-jus]: https://github.com/samrocketman/jenkins-script-console-scripts/blob/master/disable-all-update-sites.groovy
+[jenkins-sc-disable-jus]: https://github.com/samrocketman/jenkins-script-console-scripts/blob/master/disable-all-update-sites.groovy
 [ss-jenkins-bootstrap]: https://github.com/sandscape/jenkins-bootstrap
+[ss-options]: docs/sandscape-config.md#sandscape-options
 [ss]: https://github.com/sandscape/sandscape
 [youtube-sc]: https://www.youtube.com/watch?v=T1x2kCGRY1w
