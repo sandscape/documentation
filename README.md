@@ -93,8 +93,8 @@ but not necessarily familiar with Sandscape.
   for Sandscape plugins.  It reads the `sandscape-config.json` user
   configuration, creates Groovy bindings for the configuration and Sandscape
   plugins, downloads any missing Sandscape plugins, and then executes the
-  Sandscape plugins in the order in which they're defined.  Sandscape itself
-  does not itself update any settings on the Jenkins instance.
+  Sandscape plugins in the order in which they're defined.  Sandscape does not
+  update any settings on the Jenkins instance.
 * Sandscape plugins - Simple groovy scripts designed to be run within the
   Jenkins Script Console but called from Sandscape.  Sandscape plugins are
   scripts that actually configure Jenkins settings of the running Jenkins
