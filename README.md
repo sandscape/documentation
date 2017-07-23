@@ -37,7 +37,7 @@ Console:
   do including create sub-processes and execute arbitrary commands on the
   Jenkins master and slaves.  It can even read files in which the Jenkins master
   has access to on the host (like `/etc/passwd`).
-* Offers no administrative controls stop a User once they are able to execute
+* Offers no administrative controls to stop a User once they are able to execute
   the Script Console from affecting all parts of the Jenkins infrastructure.
   Granting a normal Jenkins user Script Console Access is essentially the same
   as giving them Administer rights within Jenkins.
